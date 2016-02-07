@@ -1,0 +1,98 @@
+<HTML>
+<html>
+<head>
+  <title>Basic CRUD Backbone</title>
+
+  <script type="text/javascript" src="js/lib/underscore.min.js"></script>
+  <script type="text/javascript" src="js/lib/jquery.min.js"></script>
+  <script type="text/javascript" src="js/lib/backbone.min.js"></script>
+  <link rel="stylesheet" href="js/lib/bootstrap.min.css" />
+
+  <script type="text/javascript" src="js/recruiter_router.js"></script>
+  <script type="text/javascript" src="js/models/recruiter_model.js"></script>
+  <script type="text/javascript" src="js/views/recruiter_index.js"></script>
+  <script type="text/javascript" src="js/views/recruiter_row.js"></script>
+  <script type="text/javascript" src="js/views/recruiter_new.js"></script>
+  <script type="text/javascript" src="js/views/recruiter_edit.js"></script>
+  <script type="text/javascript" src="js/views/recruiter_show.js"></script>
+
+</head>
+<body>
+
+  <div class="container">
+    <div class="row">
+      <div id="main-content">
+      </div>
+    </div>
+  </div>
+
+  <script type="text/template" id="formTemplate">
+    <form>
+      <h2><%= name %></h2>
+      <label>Title:</label>
+      <input type="text" name="name" value="<%= name %>"/>
+      <button class="save btn btn-success" type="submit">Save</button>
+      <a href="#home/" class="btn btn-info">Cancel</a>
+    </form>
+  </script>
+
+  <script type="text/template" id="indexTemplate">
+    <div class="row">
+      <a href="#home/new" class="btn btn-success">Create New Recruiter</a>
+    </div>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th width="64%">NAME</th>
+          <th width="12%">View</th>
+          <th width="12%">Edit</th>
+          <th width="12%">Delete</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </script>
+
+  <script type="text/template" id="rowTemplate">
+    <td>
+      <%= name %>
+    </td>
+    <td>
+      <a href="#home/<%= id %>/view" class="view btn btn-info">view</a>
+    </td>
+    <td>
+      <a href="#home/<%= id %>/edit" class="edit btn btn-info">edit</a>
+    </td>
+    <td>
+      <a href="#home/" class="delete btn btn-danger">delete</a>
+    </td>
+  </script>
+
+  <script type="text/template" id="showTemplate">
+    <h2>
+      <%= name %>
+    </h2>
+    <hr/>
+    <a class="btn btn-info" href="#home/">back</a>
+  </script>
+
+  <script type="text/javascript">
+    var router = new APP.RecruiterRouter({
+      recruiters: new APP.RecruiterCollection()
+    });
+
+    // we manually pass in the initial data, but this would be called with a collection.fetch() normally
+    router.recruiters.reset([
+      {
+        "name": "Recruiter 1",
+        "id": 47
+      },
+      {
+        "name": "Recruiter 2",
+        "id": 48
+      }
+    ]);
+    Backbone.history.start();
+  </script>
+</body>
+</html>
