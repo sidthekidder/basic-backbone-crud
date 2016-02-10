@@ -8,37 +8,59 @@
   <script type="text/javascript" src="js/lib/backbone.min.js"></script>
   <link rel="stylesheet" href="js/lib/bootstrap.min.css" />
 
-  <script type="text/javascript" src="js/recruiter_router.js"></script>
+  <script type="text/javascript" src="js/router.js"></script>
   <script type="text/javascript" src="js/models/recruiter_model.js"></script>
-  <script type="text/javascript" src="js/views/recruiter_index.js"></script>
-  <script type="text/javascript" src="js/views/recruiter_row.js"></script>
-  <script type="text/javascript" src="js/views/recruiter_new.js"></script>
-  <script type="text/javascript" src="js/views/recruiter_edit.js"></script>
-  <script type="text/javascript" src="js/views/recruiter_show.js"></script>
+  <script type="text/javascript" src="js/views/recruiter_views.js"></script>
+  <script type="text/javascript" src="js/models/candidate_model.js"></script>
+  <script type="text/javascript" src="js/views/candidate_views.js"></script>
 
 </head>
 <body>
 
   <div class="container">
+
+    <div class="row">
+      <a style="float:left;" class="btn btn-info" href="#recruiters/">Recruiters</a>
+      <a style="float:right;" class="btn btn-danger" href="#candidates/">Candidates</a>
+    </div>
+
+    <hr><hr>
     <div class="row">
       <div id="main-content">
       </div>
     </div>
   </div>
 
-  <script type="text/template" id="formTemplate">
+  <script type="text/template" id="formTemplater">
     <form>
-      <h2><%= name %></h2>
-      <label>Title:</label>
-      <input type="text" name="name" value="<%= name %>"/>
+      <h2><%= rec.name %></h2>
+      <div class="col-sm-12">
+        <label>Title:</label>
+        <input type="text" name="name" value="<%= rec.name %>"/>
+      </div>
+      <label>Candidates:</label>
+      <table class="table table-striped">
+        <tbody>
+          <% _.each(candsChecked, function(cand) { %>
+            <tr>
+              <td><input type="checkbox" checked name="cands" value ="<%= cand.id %>"><%= cand.name %></input></td>
+            </tr>
+          <% }) %>
+          <% _.each(candsUnchecked, function(cand) { %>
+            <tr>
+              <td><input type="checkbox" name="cands" value ="<%= cand.id %>"><%= cand.name %></input></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
       <button class="save btn btn-success" type="submit">Save</button>
-      <a href="#home/" class="btn btn-info">Cancel</a>
+      <a href="#recruiters/" class="btn btn-info">Cancel</a>
     </form>
   </script>
 
-  <script type="text/template" id="indexTemplate">
+  <script type="text/template" id="indexTemplater">
     <div class="row">
-      <a href="#home/new" class="btn btn-success">Create New Recruiter</a>
+      <a href="#recruiters/new" class="btn btn-success">Create New Recruiter</a>
     </div>
     <table class="table table-striped">
       <thead>
@@ -53,43 +75,134 @@
     </table>
   </script>
 
-  <script type="text/template" id="rowTemplate">
+  <script type="text/template" id="rowTemplater">
     <td>
       <%= name %>
     </td>
     <td>
-      <a href="#home/<%= id %>/view" class="view btn btn-info">view</a>
+      <a href="#recruiters/<%= id %>/view" class="view btn btn-info">view</a>
     </td>
     <td>
-      <a href="#home/<%= id %>/edit" class="edit btn btn-info">edit</a>
+      <a href="#recruiters/<%= id %>/edit" class="edit btn btn-info">edit</a>
     </td>
     <td>
-      <a href="#home/" class="delete btn btn-danger">delete</a>
+      <a href="#recruiters/" class="delete btn btn-danger">delete</a>
     </td>
   </script>
 
-  <script type="text/template" id="showTemplate">
+  <script type="text/template" id="showTemplater">
     <h2>
-      <%= name %>
+      <%= rec.name %>
     </h2>
-    <hr/>
-    <a class="btn btn-info" href="#home/">back</a>
+    <table class="table table-striped">
+      <tr>
+        <th>Candidates</th>
+      </tr>
+      <% _.each(cands, function (cand) { %>
+      <tr>
+        <td><%= cand.name %></td>
+      </tr>
+      <% }) %>
+    </table>
+    <a class="btn btn-info" href="#recruiters/">back</a>
   </script>
+
+
+  <script type="text/template" id="formTemplatec">
+    <form>
+      <h2><%= name %></h2>
+      <label>Title:</label>
+      <input type="text" name="name" value="<%= name %>"/>
+      <button class="save btn btn-success" type="submit">Save</button>
+      <a href="#candidates/" class="btn btn-info">Cancel</a>
+    </form>
+  </script>
+
+  <script type="text/template" id="indexTemplatec">
+    <div class="row">
+      <a href="#candidates/new" class="btn btn-success">Create New Candidate</a>
+    </div>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th width="64%">NAME</th>
+          <th width="12%">View</th>
+          <th width="12%">Edit</th>
+          <th width="12%">Delete</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </script>
+
+  <script type="text/template" id="rowTemplatec">
+    <td>
+      <%= name %>
+    </td>
+    <td>
+      <a href="#candidates/<%= id %>/view" class="view btn btn-info">view</a>
+    </td>
+    <td>
+      <a href="#candidates/<%= id %>/edit" class="edit btn btn-info">edit</a>
+    </td>
+    <td>
+      <a href="#candidates/" class="delete btn btn-danger">delete</a>
+    </td>
+  </script>
+
+  <script type="text/template" id="showTemplatec">
+    <label>Name:</label><h2><%= name %></h2>
+    <label>ID:</label><h4><%= id %></h4>
+    <hr/>
+    <a class="btn btn-info" href="#candidates/">back</a>
+  </script>
+
 
   <script type="text/javascript">
-    var router = new APP.RecruiterRouter({
-      recruiters: new APP.RecruiterCollection()
+  
+    $("input[type=checkbox], input[type=radio]").change(function () {
+         $("input[checked='checked']:not(:checked)").each(function (index) {
+             $(this).removeAttr('checked');
+         });
+         $("input:not([checked='checked']):checked").each(function (index) {
+             $(this).attr('checked', 'true');
+         });
+    });
+
+    var router = new APP.Router({
+      recruiters: new APP.RecruiterCollection(),
+      candidates: new APP.CandidateCollection()
     });
 
     // we manually pass in the initial data, but this would be called with a collection.fetch() normally
     router.recruiters.reset([
       {
         "name": "Recruiter 1",
-        "id": 47
+        "id": 47,
+        "candidates": ['4', '8']
       },
       {
         "name": "Recruiter 2",
-        "id": 48
+        "id": 48,
+        "candidates": ['5']
+      }
+    ]);
+
+    router.candidates.reset([
+      {
+        "name": "Candidate 10",
+        "id": 5,
+        "included": true
+      },
+      {
+        "name": "Candidate 11",
+        "id": 4,
+        "included": true
+      },
+      {
+        "name": "Candidate 12",
+        "id": 8,
+        "included": true
       }
     ]);
     Backbone.history.start();

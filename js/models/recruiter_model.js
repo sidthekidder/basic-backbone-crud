@@ -1,7 +1,7 @@
-
 APP.RecruiterModel = Backbone.Model.extend({
   defaults: {
-    name: ""
+    name: "",
+    candidates: []
   }
 })
 
